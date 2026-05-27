@@ -1,28 +1,104 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>琮祐企業 — CongYou ESG | 石頭紙系列</title>
-    <meta name="description" content="琮祐企業以天然礦石為原料，生產防水抗凍、低碳環保的石頭紙系列產品。無塑永續，由石開始。" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+TC:wght@200;300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WHKFDF3GFS"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-WHKFDF3GFS');
-    </script>
-    <script type="module" crossorigin src="/assets/index-DDNDs_RM.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CHmLwmtL.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>琮祐企業 — CongYou ESG | 石頭紙系列</title>
+<meta name="description" content="琮祐企業以天然礦石為原料，生產防水抗凍、低碳環保的石頭紙系列產品。無塑永續，由石開始。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Noto+Sans+TC:wght@200;300;400;500;600&display=swap"
+rel="stylesheet"
+/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WHKFDF3GFS"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-WHKFDF3GFS');
+</script>
+<script type="module" crossorigin src="/assets/index-DDNDs_RM.js"></script>
+<link rel="stylesheet" crossorigin href="/assets/index-CHmLwmtL.css">
+</head>
+<body>
+<div id="root"></div>
+
+<!-- LINE / Telegram 欄位注入腳本 -->
+<script>
+(function () {
+  'use strict';
+
+  var _origFetch = window.fetch.bind(window);
+  window.fetch = function (resource, init) {
+    if (
+      typeof resource === 'string' &&
+      resource.indexOf('script.google.com') !== -1 &&
+      init && init.method === 'POST'
+    ) {
+      try {
+        var body = JSON.parse(init.body);
+        body.line     = (document.getElementById('_cj_line')     || {}).value || '';
+        body.telegram = (document.getElementById('_cj_telegram') || {}).value || '';
+        init = Object.assign({}, init, { body: JSON.stringify(body) });
+      } catch (e) { }
+    }
+    return _origFetch(resource, init);
+  };
+
+  function tryInject() {
+    if (document.getElementById('_cj_line')) return true;
+
+    var form = document.querySelector('form');
+    if (!form) return false;
+
+    var grids = form.querySelectorAll('.grid');
+    var targetGrid = null;
+    for (var i = 0; i < grids.length; i++) {
+      var inputs = grids[i].querySelectorAll('input');
+      var hasEmail = false;
+      for (var j = 0; j < inputs.length; j++) {
+        if (inputs[j].type === 'email') { hasEmail = true; break; }
+      }
+      if (hasEmail) { targetGrid = grids[i]; break; }
+    }
+    if (!targetGrid) return false;
+
+    var newGrid = document.createElement('div');
+    newGrid.className = 'grid grid-cols-1 sm:grid-cols-2 gap-5';
+    newGrid.id = '_cj_contact_row';
+    newGrid.innerHTML =
+      '<div class="flex flex-col gap-1.5">' +
+        '<label class="text-[11px] text-graphite font-light tracking-wide">LINE ID</label>' +
+        '<input id="_cj_line" type="text" placeholder="您的 LINE ID"' +
+          ' class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 font-light' +
+          ' placeholder:text-gray-300 focus:outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10 transition-all duration-200" />' +
+      '</div>' +
+      '<div class="flex flex-col gap-1.5">' +
+        '<label class="text-[11px] text-graphite font-light tracking-wide">Telegram 帳號</label>' +
+        '<input id="_cj_telegram" type="text" placeholder="@您的 Telegram 帳號"' +
+          ' class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 font-light' +
+          ' placeholder:text-gray-300 focus:outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10 transition-all duration-200" />' +
+      '</div>';
+
+    targetGrid.insertAdjacentElement('afterend', newGrid);
+    return true;
+  }
+
+  var obs = new MutationObserver(function () {
+    if (tryInject()) obs.disconnect();
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState !== 'loading') {
+    setTimeout(tryInject, 200);
+  } else {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(tryInject, 200);
+    });
+  }
+})();
+</script>
+</body>
 </html>
